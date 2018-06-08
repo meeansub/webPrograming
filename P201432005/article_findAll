@@ -1,0 +1,32 @@
+CREATE DEFINER=`user1`@`localhost` PROCEDURE `article_findAll`(
+  IN firstRecordIndex INT,
+  IN pageSize INT,
+  IN ss VARCHAR(100),
+  IN st NVARCHAR(100),
+  IN od VARCHAR(100)
+)
+BEGIN
+
+SELECT a.*, u.name, b.boardName
+FROM article a 
+LEFT JOIN user u ON a.userId  = u.id
+left join board b on a.boardId=b.Id
+
+WHERE 
+  (ss = '0') OR
+  (ss = '1' AND name LIKE st) OR
+  (ss = '2' AND title LIKE st)
+ORDER BY 
+  CASE WHEN od = '0' THEN a.id 
+  END,
+  CASE WHEN od = '1' THEN u.name
+       WHEN od = '4' THEN a.title
+  END,
+  CASE WHEN od = '2' THEN u.name   
+  END DESC,
+  CASE WHEN od = '3' THEN a.no     
+  END DESC
+  
+LIMIT firstRecordIndex, pageSize;
+  
+END
