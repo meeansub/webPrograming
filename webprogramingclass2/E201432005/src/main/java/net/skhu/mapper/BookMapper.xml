@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.skhu.mapper.BookMapper">
+
+    <cache flushInterval="1000" />
+
+    <resultMap id="resultMap1" type="Book">
+        <id property = "id" column = "id"/>
+        <result property="title" column="title"/>
+        <result property="author" column="author"/>
+        <result property="categoryId" column="categoryId"/>
+        <result property="price" column="price"/>
+        <result property="publisherId" column="publisherId"/>
+        <result property="available" column="available"/>
+
+
+        <association property="category" javaType="Category">
+            <id property="id" column="categoryId"/>
+            <result property="categoryName" column="categoryName" />
+        </association>
+
+        <association property="publisher" javaType="Publisher">
+            <id property="id" column="publisherId" />
+            <result property="title" column="pTitle" />
+        </association>
+    </resultMap>
+
+    <select id="findAll" resultMap="resultMap1">
+        select b.*, c.categoryName,p.title pTitle
+        from book b  left join category c
+        on b.categoryId=c.id
+        left join publisher p on b.publisherId = p.id
+        order by b.id
+
+    </select>
+
+    <select id = "findOne" resultType = "Book">
+  	select * from book
+  	where id = #{id}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    INSERT Book (title, author, categoryId, price, publisherId, available)
+    VALUES (#{title}, #{author}, #{categoryId}, #{price}, #{publisherId}, #{available})
+   </insert>
+
+    <update id="update">
+    UPDATE Book SET
+      title = #{title},
+      author = #{author},
+      categoryId = #{categoryId},
+      price = #{price},
+      publisherId = #{publisherId},
+      available = #{available}
+    WHERE id = #{id}
+  </update>
+
+    <delete id="delete">
+        DELETE from book
+        where id=#{id}
+
+    </delete>
+
+
+
+</mapper>
