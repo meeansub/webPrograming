@@ -49,6 +49,5 @@
         </c:forEach>
         </tbody>
     </table>
-
 </div>
 </body>
